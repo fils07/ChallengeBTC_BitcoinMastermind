@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin - Compteur</title>
+  <link rel="stylesheet" href="/styles.css" />
+</head>
+<body>
+  <div class="container">
+    <h1>ADMIN</h1>
+    <div class="admin-container">
+      <p>Nombre de personnes ayant cliqué:</p>
+      <div class="counter-display" id="count">-</div>
+      <button class="refresh-btn" onclick="loadCount()">Rafraîchir</button>
+    </div>
+  </div>
+
+  <script>
+    function loadCount() {
+      fetch('/api/counter')
+        .then(res => res.json())
+        .then(data => {
+          document.getElementById('count').textContent = data.count;
+        })
+        .catch(err => {
+          document.getElementById('count').textContent = 'Erreur';
+          console.error('Erreur:', err);
+        });
+    }
+    
+    // Charger le compteur au démarrage
+    loadCount();
+    
+    // Rafraîchir automatiquement chaque 2 secondes
+    setInterval(loadCount, 2000);
+  </script>
+</body>
+</html>
