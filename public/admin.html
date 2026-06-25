@@ -10,21 +10,41 @@
   <div class="container">
     <h1>ADMIN</h1>
     <div class="admin-container">
-      <p>Nombre de personnes ayant cliqué:</p>
+      <p>Nombre de personnes ayant visité le site:</p>
       <div class="counter-display" id="count">-</div>
+
+      <h2>Marques de téléphone</h2>
+      <ul id="brand-list"></ul>
+
       <button class="refresh-btn" onclick="loadCount()">Rafraîchir</button>
     </div>
   </div>
 
   <script>
+    function renderBrands(brands) {
+      const brandList = document.getElementById('brand-list');
+      const entries = Object.entries(brands || {});
+
+      if (!entries.length) {
+        brandList.innerHTML = '<li>Aucune donnée</li>';
+        return;
+      }
+
+      brandList.innerHTML = entries
+        .map(([brand, count]) => `<li>${brand}: ${count}</li>`)
+        .join('');
+    }
+
     function loadCount() {
       fetch('/api/counter')
         .then(res => res.json())
         .then(data => {
-          document.getElementById('count').textContent = data.count;
+          document.getElementById('count').textContent = data.count ?? 0;
+          renderBrands(data.brands || {});
         })
         .catch(err => {
           document.getElementById('count').textContent = 'Erreur';
+          document.getElementById('brand-list').innerHTML = '<li>Erreur</li>';
           console.error('Erreur:', err);
         });
     }
